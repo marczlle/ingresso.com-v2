@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package cinema;
+
+// Mensagens
+message AssentoID {
+    string sessao_id = 1;
+    string assento_num = 2;
+}
+
+message StatusReserva {
+    enum Estado {
+        RESERVADO = 0;
+        BLOQUEADO_TEMP = 1;
+        DISPONIVEL = 2;
+    }
+    Estado estado = 1;
+    string mensagem = 2;
+}
+
+message ReservaRequest {
+    AssentoID assento = 1;
+    string usuario_id = 2;
+}
+
+message ReservaResponse {
+    bool sucesso = 1;
+    string mensagem = 2;
+    string reserva_token = 3;
+}
+
+// Serviço RPC (Booking Service)
+service Reserva {
+    rpc ReservarAssento(ReservaRequest) returns (ReservaResponse);
+    rpc ConfirmarPagamento(ReservaRequest) returns (ReservaResponse); // Simulação de confirmação
+}
