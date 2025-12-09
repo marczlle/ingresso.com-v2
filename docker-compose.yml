@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  # 1. SERVIÇO DE ESTADO: REDIS (Bloqueio Distribuído)
+  redis:
+    image: redis:7-alpine
+    container_name: redis-cinema
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data # Armazena dados permanentemente (opcional, mas recomendado)
+
+  # 2. SERVIÇO DE COORDENAÇÃO: ZOOKEEPER (Requisito do Kafka)
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.3
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  # 3. SERVIÇO DE MENSAGERIA: KAFKA (Broker de Eventos)
+  kafka:
+    image: confluentinc/cp-kafka:7.5.3
+    container_name: kafka-broker
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper # Garante que o Zookeeper inicie primeiro
+    environment:
+      # Conecta ao Zookeeper (usando o nome do serviço)
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181 
+      
+      # O endereço que o broker usa para se anunciar no Docker (interno)
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      
+      # O endereço que os clientes externos (seu código Python) usam
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+volumes:
+  redis_data: {}
