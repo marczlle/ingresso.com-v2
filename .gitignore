@@ -1,0 +1,15 @@
+# Diretórios de cache e bytecodes do Python
+__pycache__/
+*.pyc
+*.pyd
+*.pyo
+
+# Ambientes virtuais
+# (Muitas vezes chamados de venv, env, .venv, etc.)
+venv/
+env/
+.venv/
+
+# Arquivos de log e banco de dados
+*.log
+*.sqlite3

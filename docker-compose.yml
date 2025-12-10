@@ -3,13 +3,14 @@ version: '3.8'
 services:
   # 1. SERVIÇO DE ESTADO: REDIS (Bloqueio Distribuído)
   redis:
-    image: redis:7-alpine
-    container_name: redis-cinema
-    ports:
-      - "6379:6379"
-    command: redis-server --appendonly yes
-    volumes:
-      - redis_data:/data # Armazena dados permanentemente (opcional, mas recomendado)
+      image: redis:7-alpine
+      container_name: redis-cinema
+      ports:
+        - "6379:6379"
+      # Adicione este comando para habilitar Keyspace Notifications (e 'Ex' para expiração)
+      command: redis-server --appendonly yes --notify-keyspace-events "Ex" 
+      volumes:
+        - redis_data:/data
 
   # 2. SERVIÇO DE COORDENAÇÃO: ZOOKEEPER (Requisito do Kafka)
   zookeeper:
