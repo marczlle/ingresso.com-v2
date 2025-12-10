@@ -8,128 +8,659 @@ import logging
 
 HTML_CONTENT = """
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-    <title>Reserva Distribuída de Cinema</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Seleção de Assentos • Cinemas Costa Dourada</title>
     <style>
-        body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; }
-        #screen { width: 300px; height: 10px; background: #333; margin-bottom: 20px; border-radius: 5px; }
-        #seats-container { display: grid; grid-template-columns: repeat(5, 50px); gap: 10px; }
-        .seat { width: 50px; height: 50px; background-color: green; border: 1px solid #1e7e34; border-radius: 5px; cursor: pointer; display: flex; justify-content: center; align-items: center; font-weight: bold; }
-        .seat.blocked { background-color: #ffc107; cursor: not-allowed; border-color: #da9b0c; }
-        .seat.reserved { background-color: red; cursor: not-allowed; border-color: #c82333; }
-        .seat.unavailable { background-color: gray; cursor: not-allowed; border-color: #6c757d; }
-        #status-box { margin-top: 20px; padding: 10px; border: 1px solid #ccc; width: 300px; }
+        :root {
+            --bg:#040b18;
+            --panel:#0b1426;
+            --panel-dark:#101b30;
+            --panel-light:#1a2745;
+            --accent:#6c7dff;
+            --accent-strong:#4e5cff;
+            --highlight:#f7c843;
+            --blocked:#4c5674;
+            --reserved:#1f2435;
+            --text-soft:#8f9dc7;
+            --text-muted:#65719a;
+            --danger:#ff6b6b;
+            --success:#5fe1a1;
+        }
+        *{box-sizing:border-box;margin:0;padding:0;}
+        body{
+            font-family:"Inter","Segoe UI",system-ui,-apple-system,sans-serif;
+            background:var(--bg);
+            color:#fff;
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            padding:32px 24px 60px;
+        }
+        .app-shell{
+            width:min(1200px,100%);
+            display:flex;
+            flex-direction:column;
+            gap:18px;
+        }
+        .top-bar{
+            background:#1c2f74;
+            border-radius:18px;
+            padding:18px 28px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            box-shadow:0 12px 30px rgba(17,24,39,.4);
+        }
+        .top-bar .info-group{
+            display:flex;
+            gap:24px;
+            font-weight:600;
+        }
+        .top-bar .info-badge{
+            display:flex;
+            align-items:center;
+            gap:8px;
+            font-size:0.95rem;
+            letter-spacing:.02em;
+        }
+        .top-bar .info-badge svg{
+            width:18px;
+            height:18px;
+        }
+        .user-pill{
+            background:rgba(255,255,255,.1);
+            padding:8px 14px;
+            border-radius:999px;
+            font-size:0.9rem;
+        }
+        .seat-panel{
+            background:var(--panel);
+            border-radius:22px;
+            padding:28px 32px 36px;
+            box-shadow:0 40px 60px rgba(0,0,0,.45);
+            display:flex;
+            flex-direction:column;
+            gap:24px;
+        }
+        .panel-header{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+        .panel-title{
+            font-size:1.3rem;
+            font-weight:600;
+        }
+        .text-small{
+            font-size:0.9rem;
+        }
+        .seat-layout{
+            display:grid;
+            grid-template-columns:auto 1fr auto 60px;
+            gap:16px;
+            align-items:center;
+        }
+        .row-indicators{
+            display:flex;
+            flex-direction:column;
+            gap:18px;
+            font-weight:600;
+            color:var(--text-soft);
+        }
+        .row-indicators span{
+            text-align:center;
+            opacity:0.6;
+        }
+        .seat-grid{
+            background:var(--panel-dark);
+            border-radius:26px;
+            padding:28px 36px 36px;
+            display:flex;
+            flex-direction:column;
+            gap:18px;
+            position:relative;
+            transition:transform .2s ease;
+            transform-origin:center;
+        }
+        .seat-row{
+            display:flex;
+            align-items:center;
+            gap:22px;
+        }
+        .seat-group{
+            display:grid;
+            grid-template-columns:repeat(14,32px);
+            gap:12px;
+        }
+        .seat-group.right{
+            grid-template-columns:repeat(6,32px);
+        }
+        .walkway{
+            width:70px;
+            height:90%;
+            border-radius:18px;
+            border:1px dashed rgba(255,255,255,.08);
+            background:rgba(255,255,255,.02);
+        }
+        .seat{
+            width:32px;
+            height:32px;
+            border-radius:50%;
+            border:0;
+            outline:none;
+            background:#6a7bff;
+            color:#0b1527;
+            font-weight:600;
+            cursor:pointer;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            position:relative;
+            transition:transform .15s ease, background .2s ease, box-shadow .2s ease;
+        }
+        .seat::after{
+            content:attr(data-label);
+            font-size:0.56rem;
+            color:#0b1524;
+            font-weight:700;
+            opacity:0;
+            transition:opacity .2s ease;
+        }
+        .seat-grid.show-labels .seat::after{
+            opacity:1;
+        }
+        .seat.available{background:#9fa9ff;}
+        .seat.selected{
+            background:var(--highlight);
+            color:#1d1b0b;
+            box-shadow:0 0 0 4px rgba(247,200,67,.25);
+        }
+        .seat.blocked{
+            background:var(--blocked);
+            color:#d7ddff;
+            cursor:not-allowed;
+            opacity:0.8;
+        }
+        .seat.reserved{
+            background:#2f364d;
+            color:#94a2d6;
+            cursor:not-allowed;
+            border:2px solid rgba(255,255,255,.1);
+        }
+        .seat.pending{
+            animation:pulse 1s infinite;
+            background:#ffd166;
+        }
+        @keyframes pulse{
+            0%{box-shadow:0 0 0 0 rgba(255,209,102,.4);}
+            70%{box-shadow:0 0 0 10px rgba(255,209,102,0);}
+            100%{box-shadow:0 0 0 0 rgba(255,209,102,0);}
+        }
+        .seat.wheelchair{
+            border:2px solid var(--accent);
+            background:#0b1524;
+            color:var(--accent);
+        }
+        .seat.wheelchair::before{
+            content:"♿";
+            position:absolute;
+            font-size:0.9rem;
+            color:var(--accent);
+            opacity:0.85;
+        }
+        .seat:disabled{
+            cursor:not-allowed;
+        }
+        .zoom-stack{
+            background:var(--panel-light);
+            border-radius:36px;
+            padding:14px 10px;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            gap:14px;
+        }
+        .zoom-stack button{
+            width:30px;
+            height:30px;
+            border-radius:50%;
+            border:none;
+            background:var(--panel);
+            color:#fff;
+            font-size:1.1rem;
+            cursor:pointer;
+        }
+        .zoom-stack input[type=range]{
+            writing-mode:bt-lr;
+            -webkit-appearance:none;
+            width:140px;
+            transform:rotate(-90deg);
+        }
+        .zoom-stack input[type=range]::-webkit-slider-thumb{
+            -webkit-appearance:none;
+            width:18px;
+            height:18px;
+            border-radius:50%;
+            background:var(--accent);
+            border:3px solid var(--panel);
+            box-shadow:0 0 0 3px rgba(108,125,255,.2);
+        }
+        .zoom-stack input[type=range]::-webkit-slider-runnable-track{
+            height:6px;
+            background:rgba(255,255,255,.2);
+            border-radius:6px;
+        }
+        .screen-label{
+            margin-top:-8px;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            flex-direction:column;
+            gap:8px;
+        }
+        .screen-bar{
+            width:80%;
+            height:10px;
+            border-radius:40px;
+            background:linear-gradient(90deg, rgba(255,255,255,.5), rgba(255,255,255,.1));
+        }
+        .toggle-row{
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            gap:12px;
+            color:var(--text-soft);
+            font-size:0.9rem;
+        }
+        .toggle{
+            width:46px;
+            height:24px;
+            border-radius:999px;
+            position:relative;
+            cursor:pointer;
+            display:inline-flex;
+            align-items:center;
+        }
+        .toggle input{
+            opacity:0;
+            width:0;
+            height:0;
+            position:absolute;
+        }
+        .toggle-slider{
+            width:100%;
+            height:100%;
+            border-radius:999px;
+            background:rgba(255,255,255,.15);
+            position:relative;
+            transition:background .2s ease;
+        }
+        .toggle-slider::after{
+            content:"";
+            width:18px;
+            height:18px;
+            border-radius:50%;
+            background:#fff;
+            position:absolute;
+            top:3px;
+            left:4px;
+            transition:transform .2s ease;
+        }
+        .toggle input:checked + .toggle-slider{
+            background:var(--accent);
+        }
+        .toggle input:checked + .toggle-slider::after{
+            transform:translateX(20px);
+        }
+        .legend{
+            display:flex;
+            gap:18px;
+            flex-wrap:wrap;
+            color:var(--text-soft);
+            font-size:0.9rem;
+        }
+        .legend-item{
+            display:flex;
+            align-items:center;
+            gap:8px;
+        }
+        .legend-swatch{
+            width:16px;
+            height:16px;
+            border-radius:50%;
+        }
+        .legend-swatch.available{background:#9fa9ff;}
+        .legend-swatch.selected{background:var(--highlight);}
+        .legend-swatch.blocked{background:var(--blocked);}
+        .legend-swatch.reserved{background:#2f364d;}
+        .legend-swatch.wheelchair{
+            border:2px solid var(--accent);
+            background:transparent;
+        }
+        .status-panel{
+            background:var(--panel-dark);
+            border-radius:18px;
+            padding:18px 22px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:16px;
+        }
+        .status-text{
+            font-weight:500;
+        }
+        .status-text[data-tone="error"]{color:var(--danger);}
+        .status-text[data-tone="success"]{color:var(--success);}
+        .activity-feed{
+            list-style:none;
+            color:var(--text-muted);
+            font-size:0.85rem;
+            display:flex;
+            gap:12px;
+        }
+        .activity-feed li{
+            background:rgba(255,255,255,.04);
+            padding:8px 12px;
+            border-radius:12px;
+        }
+        @media (max-width:950px){
+            .seat-layout{
+                grid-template-columns:1fr;
+            }
+            .row-indicators,.zoom-stack{
+                display:none;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>Sala de Cinema Distribuída</h1>
-    <div id="screen"></div>
-    <p>Sessão: S001 | Usuário ID: <span id="user-display">Gerando...</span></p>
+    <div class="app-shell">
+        <header class="top-bar">
+            <div class="info-group">
+                <div class="info-badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 2C8 2 4 5 4 10c0 5.25 7.5 12 8 12s8-6.75 8-12c0-5-4-8-8-8z"/><circle cx="12" cy="10" r="3"/></svg>
+                    Cinemas Costa Dourada · SALA 1
+                </div>
+                <div class="info-badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M8 7V3m8 4V3M3 11h18M5 21h14a2 2 0 0 0 2-2V7H3v12a2 2 0 0 0 2 2z"/></svg>
+                    SÁB 13/12
+                </div>
+                <div class="info-badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="10"/></svg>
+                    17:45
+                </div>
+            </div>
+            <div class="user-pill">Usuário · <span id="user-display">--</span></div>
+        </header>
 
-    <div id="seats-container">
-        </div>
+        <section class="seat-panel">
+            <div class="panel-header">
+                <p class="panel-title">Escolha suas poltronas</p>
+                <p class="text-small" style="color:var(--text-soft);">Tempo de bloqueio: 5 min</p>
+            </div>
 
-    <div id="status-box">Status: Conectando...</div>
+            <div class="seat-layout">
+                <div class="row-indicators" id="row-labels-left"></div>
+                <div class="seat-grid" id="seat-grid"></div>
+                <div class="row-indicators" id="row-labels-right"></div>
+                <div class="zoom-stack">
+                    <button type="button" id="zoom-in">+</button>
+                    <input type="range" id="zoom-range" min="80" max="130" value="100" />
+                    <button type="button" id="zoom-out">−</button>
+                </div>
+            </div>
+
+            <div class="screen-label">
+                <div class="screen-bar"></div>
+                <span style="text-transform:uppercase; letter-spacing:.4em; color:var(--text-muted); font-size:0.8rem;">Tela</span>
+            </div>
+
+            <div class="toggle-row">
+                Exibir números dos assentos
+                <label class="toggle">
+                    <input type="checkbox" id="toggle-seat-number" />
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <div class="legend">
+                <div class="legend-item"><span class="legend-swatch available"></span>Disponível</div>
+                <div class="legend-item"><span class="legend-swatch selected"></span>Selecionado</div>
+                <div class="legend-item"><span class="legend-swatch blocked"></span>Bloqueado</div>
+                <div class="legend-item"><span class="legend-swatch reserved"></span>Ocupado</div>
+                <div class="legend-item"><span class="legend-swatch wheelchair"></span>Cadeirante</div>
+            </div>
+
+            <div class="status-panel">
+                <p id="status-text" class="status-text" data-tone="info">Conectando ao servidor...</p>
+                <ul class="activity-feed" id="activity-feed"></ul>
+            </div>
+        </section>
+    </div>
 
     <script>
-        const WS_URL = 'ws://localhost:8000/ws/reserva';
-        const SEAT_CONTAINER = document.getElementById('seats-container');
-        const STATUS_BOX = document.getElementById('status-box');
-        const USER_ID = "USER_" + Math.floor(Math.random() * 1000); // ID único para o cliente
-        document.getElementById('user-display').innerText = USER_ID;
-        
-        const SEAT_MAP = ["A1", "A2", "A3", "A4", "A5", "B1", "B2", "B3", "B4", "B5"];
+        const WS_URL = (location.protocol === "https:" ? "wss://" : "ws://") + location.host + "/ws/reserva";
         const SESSION_ID = "S001";
+        const ROWS = ["J","I","H","G","F","E","D","C","B","A"];
+        const LEFT_SEATS = 14;
+        const RIGHT_SEATS = 6;
+        const WHEELCHAIR = new Set(["A01","A02","A17","A18"]);
+
+        const seatGrid = document.getElementById("seat-grid");
+        const statusText = document.getElementById("status-text");
+        const toggleSeatNumber = document.getElementById("toggle-seat-number");
+        const activityFeed = document.getElementById("activity-feed");
+        const zoomRange = document.getElementById("zoom-range");
+        const zoomInBtn = document.getElementById("zoom-in");
+        const zoomOutBtn = document.getElementById("zoom-out");
+        const rowLabelsLeft = document.getElementById("row-labels-left");
+        const rowLabelsRight = document.getElementById("row-labels-right");
+
+        const randomToken = (typeof crypto !== "undefined" && crypto.randomUUID)
+            ? crypto.randomUUID().slice(0, 6)
+            : Math.random().toString(36).slice(2, 8);
+        const USER_ID = "USR-" + randomToken.toUpperCase();
+        document.getElementById("user-display").innerText = USER_ID;
+
+        const seatElements = new Map();
+        const seatState = new Map();
         let socket = null;
 
-        // 1. Inicializa os Assentos no DOM
-        SEAT_MAP.forEach(id => {
-            const seat = document.createElement('div');
-            seat.className = 'seat';
-            seat.id = id;
-            seat.innerText = id;
-            seat.addEventListener('click', () => handleSeatClick(id));
-            SEAT_CONTAINER.appendChild(seat);
-        });
-
-        // 2. Conexão WebSocket
-        function connectWebSocket() {
-            socket = new WebSocket(WS_URL);
-
-            socket.onopen = () => {
-                STATUS_BOX.innerText = "Status: Conectado. Clique para bloquear.";
-            };
-
-            socket.onmessage = (event) => {
-                const data = JSON.parse(event.data);
-                handleBroadcast(data);
-            };
-
-            socket.onclose = () => {
-                STATUS_BOX.innerText = "Status: Desconectado. Tentando reconectar...";
-                setTimeout(connectWebSocket, 3000); 
-            };
-            
-            socket.onerror = (error) => {
-                console.error("WebSocket Error:", error);
-                STATUS_BOX.innerText = "Status: Erro de Conexão.";
-            };
+        function pad(num){
+            return String(num).padStart(2,"0");
         }
-        
-        // 3. Ação do Usuário ao Clicar
-        function handleSeatClick(seatId) {
-            const seatElement = document.getElementById(seatId);
-            if (seatElement.classList.contains('blocked') || seatElement.classList.contains('reserved')) {
-                STATUS_BOX.innerText = `Assento ${seatId} já está indisponível.`;
+
+        function createSeat(row, number){
+            const seatId = row + pad(number);
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "seat available";
+            btn.dataset.seatId = seatId;
+            btn.dataset.label = seatId;
+            if(WHEELCHAIR.has(seatId)){
+                btn.classList.add("wheelchair");
+            }
+            btn.addEventListener("click", () => handleSeatClick(seatId));
+            seatElements.set(seatId, btn);
+            seatState.set(seatId, "available");
+            return btn;
+        }
+
+        function buildRow(row){
+            const rowEl = document.createElement("div");
+            rowEl.className = "seat-row";
+            
+            const leftGroup = document.createElement("div");
+            leftGroup.className = "seat-group left";
+            for(let i=1;i<=LEFT_SEATS;i++){
+                leftGroup.appendChild(createSeat(row, i));
+            }
+
+            const walkway = document.createElement("div");
+            walkway.className = "walkway";
+
+            const rightGroup = document.createElement("div");
+            rightGroup.className = "seat-group right";
+            for(let i=LEFT_SEATS+1;i<=LEFT_SEATS+RIGHT_SEATS;i++){
+                rightGroup.appendChild(createSeat(row, i));
+            }
+
+            rowEl.append(leftGroup, walkway, rightGroup);
+            return rowEl;
+        }
+
+        function buildSeatMap(){
+            ROWS.forEach(row => {
+                const labelLeft = document.createElement("span");
+                labelLeft.textContent = row;
+                rowLabelsLeft.appendChild(labelLeft);
+
+                const labelRight = document.createElement("span");
+                labelRight.textContent = row;
+                rowLabelsRight.appendChild(labelRight);
+
+                seatGrid.appendChild(buildRow(row));
+            });
+        }
+
+        function updateSeatState(seatId, state, toneMessage){
+            const element = seatElements.get(seatId);
+            if(!element) return;
+            element.classList.remove("available","selected","blocked","reserved","pending");
+            element.classList.add(state);
+            const lockStates = new Set(["selected","blocked","reserved","pending"]);
+            element.disabled = lockStates.has(state);
+            seatState.set(seatId, state);
+            if(toneMessage){
+                setStatus(toneMessage.text, toneMessage.tone);
+            }
+        }
+
+        function setStatus(message, tone="info"){
+            statusText.textContent = message;
+            statusText.dataset.tone = tone;
+        }
+
+        function pushActivity(message){
+            const li = document.createElement("li");
+            const timestamp = new Date().toLocaleTimeString("pt-BR",{hour12:false,hour:"2-digit",minute:"2-digit"});
+            li.textContent = `[${timestamp}] ${message}`;
+            activityFeed.prepend(li);
+            if(activityFeed.children.length > 3){
+                activityFeed.removeChild(activityFeed.lastChild);
+            }
+        }
+
+        function handleSeatClick(seatId){
+            const current = seatState.get(seatId);
+            if(["blocked","reserved","selected","pending"].includes(current)){
+                setStatus(`Assento ${seatId} indisponível no momento.`, "error");
                 return;
             }
-
-            // Envia a requisição de bloqueio via WebSocket
-            socket.send(JSON.stringify({
-                acao: "bloquear",
-                sessao: SESSION_ID,
-                assento: seatId,
-                usuario_id: USER_ID
-            }));
-
-            // Muda o estado imediatamente para dar feedback, mas o broadcast confirmará
-            seatElement.classList.add('unavailable'); 
-            STATUS_BOX.innerText = `Tentando bloquear ${seatId}...`;
-        }
-
-        // 4. Receber e Tratar Broadcasts (Comunicação em Tempo Real)
-        function handleBroadcast(data) {
-            const seatElement = document.getElementById(data.assento);
-            if (!seatElement) return;
-
-            // Limpa classes anteriores
-            seatElement.classList.remove('blocked', 'reserved', 'unavailable');
-
-            if (data.evento === 'assento_bloqueado') {
-                // Outro cliente bloqueou (deve ficar cinza para todos)
-                seatElement.classList.add('blocked');
-                STATUS_BOX.innerText = data.usuario_bloqueador === USER_ID 
-                    ? `Bloqueio de ${data.assento} BEM-SUCEDIDO (Você).`
-                    : `Assento ${data.assento} BLOQUEADO por ${data.usuario_bloqueador}.`;
-            
-            } else if (data.evento === 'assento_liberado') {
-                // Assento liberado (TIMEOUT ou CANCELAMENTO)
-                seatElement.classList.add('available'); // Volta a ser verde (disponível)
-                seatElement.style.backgroundColor = 'green';
-                STATUS_BOX.innerText = `Assento ${data.assento} LIBERADO (${data.motivo}).`;
-                
-            } else if (data.evento === 'assento_reservado') {
-                // Assento reservado permanentemente
-                seatElement.classList.add('reserved');
-                STATUS_BOX.innerText = `Assento ${data.assento} RESERVADO PERMANENTEMENTE.`;
+            if(!socket || socket.readyState !== WebSocket.OPEN){
+                setStatus("Sem conexão com o servidor.", "error");
+                return;
             }
-            
-            // Re-habilita ou desabilita o clique
-            seatElement.disabled = seatElement.classList.contains('reserved') || seatElement.classList.contains('blocked');
+            const element = seatElements.get(seatId);
+            element.classList.add("pending");
+            element.disabled = true;
+            seatState.set(seatId, "pending");
+            setStatus(`Solicitando bloqueio da poltrona ${seatId}...`, "info");
+            socket.send(JSON.stringify({
+                acao:"bloquear",
+                sessao:SESSION_ID,
+                assento:seatId,
+                usuario_id:USER_ID
+            }));
         }
 
-        // Inicia a aplicação
+        function connectWebSocket(){
+            socket = new WebSocket(WS_URL);
+            socket.onopen = () => {
+                setStatus("Conectado. Escolha seu assento.", "success");
+            };
+            socket.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                if(data.evento){
+                    handleBroadcast(data);
+                }else if(data.status){
+                    handleResponse(data);
+                }
+            };
+            socket.onerror = () => {
+                setStatus("Erro na conexão. Tentando novamente...", "error");
+            };
+            socket.onclose = () => {
+                setStatus("Conexão perdida. Reconnecting...", "error");
+                setTimeout(connectWebSocket, 1500);
+            };
+        }
+
+        function handleResponse(data){
+            if(data.assento){
+                const element = seatElements.get(data.assento);
+                if(element){
+                    element.classList.remove("pending");
+                }
+            }
+            if(data.status === "erro"){
+                if(data.assento){
+                    updateSeatState(data.assento, "available");
+                }
+                setStatus(data.mensagem, "error");
+            }else{
+                setStatus(data.mensagem, "success");
+            }
+        }
+
+        function handleBroadcast(data){
+            const seatId = data.assento;
+            switch(data.evento){
+                case "assento_bloqueado":
+                    if(data.usuario_bloqueador === USER_ID){
+                        updateSeatState(seatId, "selected", {text:`${seatId} bloqueado para você.`, tone:"success"});
+                        pushActivity(`Você bloqueou ${seatId}.`);
+                    }else{
+                        updateSeatState(seatId, "blocked", {text:`${seatId} bloqueado por outro usuário.`, tone:"info"});
+                        pushActivity(`${seatId} bloqueado por ${data.usuario_bloqueador}.`);
+                    }
+                    break;
+                case "assento_liberado":
+                    updateSeatState(seatId, "available", {text:`${seatId} liberado (${data.motivo || "livre"}).`, tone:"success"});
+                    pushActivity(`${seatId} liberado.`);
+                    break;
+                case "assento_reservado":
+                    updateSeatState(seatId, "reserved", {text:`${seatId} reservado permanentemente.`, tone:"info"});
+                    pushActivity(`${seatId} reservado.`);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        toggleSeatNumber.addEventListener("change", (event) => {
+            seatGrid.classList.toggle("show-labels", event.target.checked);
+        });
+
+        function setZoom(value){
+            zoomRange.value = value;
+            seatGrid.style.transform = `scale(${value/100})`;
+        }
+        zoomRange.addEventListener("input", e => setZoom(e.target.value));
+        zoomInBtn.addEventListener("click", () => {
+            const value = Math.min(130, Number(zoomRange.value) + 5);
+            setZoom(value);
+        });
+        zoomOutBtn.addEventListener("click", () => {
+            const value = Math.max(80, Number(zoomRange.value) - 5);
+            setZoom(value);
+        });
+
+        buildSeatMap();
+        setZoom(100);
         connectWebSocket();
     </script>
 </body>
@@ -216,14 +747,26 @@ async def websocket_endpoint(websocket: WebSocket):
                             "usuario_bloqueador": usuario
                         })
                         # Retorna a confirmação apenas para o cliente que solicitou
-                        await websocket.send_text(json.dumps({"status": "ok", "mensagem": "Bloqueio temporário realizado."}))
+                        await websocket.send_text(json.dumps({
+                            "status": "ok",
+                            "mensagem": f"Assento {assento_num} bloqueado temporariamente.",
+                            "assento": assento_num
+                        }))
                     else:
                         # Bloqueio FALHA: Retorna a falha apenas para o cliente que solicitou
-                        await websocket.send_text(json.dumps({"status": "erro", "mensagem": response.mensagem}))
+                        await websocket.send_text(json.dumps({
+                            "status": "erro",
+                            "mensagem": response.mensagem,
+                            "assento": assento_num
+                        }))
                         
                 except grpc.RpcError as e:
                     logging.error(f"Erro gRPC ao bloquear: {e}")
-                    await websocket.send_text(json.dumps({"status": "erro", "mensagem": "Erro interno no servidor de reserva."}))
+                    await websocket.send_text(json.dumps({
+                        "status": "erro",
+                        "mensagem": "Erro interno no servidor de reserva.",
+                        "assento": assento_num
+                    }))
             
             # --- Adicione mais ações aqui (e.g., confirmar pagamento, cancelar) ---
             
