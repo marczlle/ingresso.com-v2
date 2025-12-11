@@ -7,8 +7,12 @@ import asyncio
 import logging
 from pathlib import Path
 from threading import Lock
+from dotenv import load_dotenv
 
 from seat_state_service import SeatStateService
+from email_service import EmailService
+
+load_dotenv()
 
 HTML_CONTENT = """
 <!DOCTYPE html>
@@ -576,8 +580,8 @@ HTML_CONTENT = """
                     <input type="text" name="cpf" placeholder="000.000.000-00" required />
                 </label>
                 <label>
-                    Contato
-                    <input type="text" name="contato" placeholder="(00) 00000-0000" required />
+                    E-mail
+                    <input type="email" name="email" placeholder="voce@email.com" required />
                 </label>
                 <div class="form-actions">
                     <button type="button" class="ghost-button" data-close-modal>Cancelar</button>
@@ -755,7 +759,7 @@ HTML_CONTENT = """
             const payload = {
                 nomeCompleto: (formData.get("nomeCompleto") || "").trim(),
                 cpf: (formData.get("cpf") || "").trim(),
-                contato: (formData.get("contato") || "").trim()
+                email: (formData.get("email") || "").trim()
             };
             socket.send(JSON.stringify({
                 acao:"confirmar_pagamento",
@@ -917,6 +921,7 @@ HTML_CONTENT = """
 RESERVAS_FILE = Path("reservas_confirmadas.json")
 reservas_lock = Lock()
 seat_snapshot_service = SeatStateService()
+email_service = EmailService()
 DEFAULT_SESSAO = "S001"
 
 
@@ -962,7 +967,6 @@ async def send_initial_state(websocket: WebSocket, sessao_id: str) -> None:
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - WebSocket - %(levelname)s - %(message)s')
 app = FastAPI()
 
-# Mantenha um registro de todos os clientes conectados
 active_connections: list[WebSocket] = []
 
 # --- Conexão gRPC com o Backend (Seu Booking Service) ---
@@ -1063,13 +1067,13 @@ async def websocket_endpoint(websocket: WebSocket):
             elif acao == "confirmar_pagamento":
                 assentos_payload = message.get("assentos") or []
                 pagamento = message.get("pagamento") or {}
-                required_fields = ("nomeCompleto", "cpf", "contato")
+                required_fields = ("nomeCompleto", "cpf", "email")
 
                 if not assentos_payload or not all(pagamento.get(field) for field in required_fields):
                     await websocket.send_text(json.dumps({
                         "status": "erro",
                         "tipo": "confirmacao_pagamento",
-                        "mensagem": "Informe nome completo, CPF, contato e ao menos um assento.",
+                        "mensagem": "Informe nome completo, CPF, e-mail e ao menos um assento.",
                         "assentos_confirmados": [],
                         "assentos_falha": assentos_payload
                     }))
@@ -1105,9 +1109,15 @@ async def websocket_endpoint(websocket: WebSocket):
                         "usuario_id": usuario,
                         "nome_completo": pagamento["nomeCompleto"],
                         "cpf": pagamento["cpf"],
-                        "contato": pagamento["contato"],
+                        "email": pagamento["email"],
                         "timestamp": time.time()
                     })
+                    email_service.send_confirmation(
+                        nome=pagamento["nomeCompleto"],
+                        email=pagamento["email"],
+                        sessao=sessao,
+                        assentos=confirmados
+                    )
 
                 if confirmados and not falhas:
                     status = "ok"
@@ -1127,7 +1137,6 @@ async def websocket_endpoint(websocket: WebSocket):
                     "assentos_falha": falhas
                 }))
             
-            # --- Adicione mais ações aqui (e.g., cancelar) ---
             
     except Exception as e:
         logging.warning(f"Conexão fechada inesperadamente: {e}")
@@ -1140,5 +1149,4 @@ async def websocket_endpoint(websocket: WebSocket):
 
 @app.get("/", response_class=HTMLResponse)
 async def get():
-    # Este é o HTML/JS que será servido (passo 4)
     return HTML_CONTENT
