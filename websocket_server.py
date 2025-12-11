@@ -1062,6 +1062,27 @@ async def websocket_endpoint(websocket: WebSocket):
                         "assento": assento_num
                     }))
             
+            elif acao == "liberar":
+                assento_num = message['assento']
+                sucesso = seat_snapshot_service.liberar_bloqueio(assento_num, sessao, usuario)
+                if sucesso:
+                    await broadcast({
+                        "evento": "assento_liberado",
+                        "assento": assento_num,
+                        "motivo": "usuario"
+                    })
+                    await websocket.send_text(json.dumps({
+                        "status": "ok",
+                        "mensagem": f"Assento {assento_num} liberado.",
+                        "assento": assento_num
+                    }))
+                else:
+                    await websocket.send_text(json.dumps({
+                        "status": "erro",
+                        "mensagem": "Não foi possível liberar o assento.",
+                        "assento": assento_num
+                    }))
+
             elif acao == "confirmar_pagamento":
                 assentos_payload = message.get("assentos") or []
                 pagamento = message.get("pagamento") or {}

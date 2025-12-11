@@ -54,7 +54,7 @@ class SeatStateService:
             pipeline.unwatch() 
             return False
 
-    def liberar_bloqueio(self, assento_id: str, sessao_id: str, usuario_id: str) -> None:
+    def liberar_bloqueio(self, assento_id: str, sessao_id: str, usuario_id: str) -> bool:
         """
         Remove o bloqueio (se ainda pertencer ao usuário).
         """
@@ -70,8 +70,10 @@ class SeatStateService:
         end
         """
         # Executa o script atômico no Redis
-        self.r.eval(lua_script, 1, key, usuario_id)
-        print(f"Bloqueio liberado para {assento_id}.")
+        result = self.r.eval(lua_script, 1, key, usuario_id)
+        if result:
+            print(f"Bloqueio liberado para {assento_id}.")
+        return bool(result)
 
     def listar_estado_sessao(self, sessao_id: str) -> dict[str, str]:
         """
