@@ -73,6 +73,24 @@ class SeatStateService:
         self.r.eval(lua_script, 1, key, usuario_id)
         print(f"Bloqueio liberado para {assento_id}.")
 
+    def listar_estado_sessao(self, sessao_id: str) -> dict[str, str]:
+        """
+        Retorna o estado atual de todos os assentos associados à sessão.
+        O valor armazenado no Redis é retornado:
+        - 'RESERVADO' significa reserva confirmada.
+        - Qualquer outro valor representa o usuário que bloqueou temporariamente.
+        """
+        pattern = f"sessao:{sessao_id}:assento:*"
+        estados: dict[str, str] = {}
+
+        for key in self.r.scan_iter(pattern):
+            assento_id = key.split(":")[-1]
+            value = self.r.get(key)
+            if value is not None:
+                estados[assento_id] = value
+
+        return estados
+
 
 # Exemplo de uso (não faz parte do gRPC, apenas para teste)
 if __name__ == '__main__':
