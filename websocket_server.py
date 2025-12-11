@@ -8,6 +8,8 @@ import logging
 from pathlib import Path
 from threading import Lock
 
+from seat_state_service import SeatStateService
+
 HTML_CONTENT = """
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -586,8 +588,9 @@ HTML_CONTENT = """
     </div>
 
     <script>
-        const WS_URL = (location.protocol === "https:" ? "wss://" : "ws://") + location.host + "/ws/reserva";
         const SESSION_ID = "S001";
+        const WS_PROTOCOL = location.protocol === "https:" ? "wss" : "ws";
+        const WS_URL = `${WS_PROTOCOL}://${location.host}/ws/reserva?sessao=${encodeURIComponent(SESSION_ID)}`;
         const ROWS = ["J","I","H","G","F","E","D","C","B","A"];
         const LEFT_SEATS = 14;
         const RIGHT_SEATS = 6;
@@ -913,6 +916,8 @@ HTML_CONTENT = """
 
 RESERVAS_FILE = Path("reservas_confirmadas.json")
 reservas_lock = Lock()
+seat_snapshot_service = SeatStateService()
+DEFAULT_SESSAO = "S001"
 
 
 def append_confirmed_reservation(entry: dict) -> None:
@@ -930,6 +935,27 @@ def append_confirmed_reservation(entry: dict) -> None:
             json.dumps(data, ensure_ascii=False, indent=2),
             encoding="utf-8"
         )
+
+
+async def send_initial_state(websocket: WebSocket, sessao_id: str) -> None:
+    """Envia o estado atual dos assentos já bloqueados/reservados para o cliente recém-conectado."""
+    estados = seat_snapshot_service.listar_estado_sessao(sessao_id)
+    if not estados:
+        return
+
+    for assento_num, valor in estados.items():
+        if valor == "RESERVADO":
+            payload = {
+                "evento": "assento_reservado",
+                "assento": assento_num
+            }
+        else:
+            payload = {
+                "evento": "assento_bloqueado",
+                "assento": assento_num,
+                "usuario_bloqueador": valor
+            }
+        await websocket.send_text(json.dumps(payload))
 
 
 # Configuração
@@ -984,6 +1010,8 @@ async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     active_connections.append(websocket)
     logging.info(f"Novo cliente conectado. Total: {len(active_connections)}")
+    sessao_param = websocket.query_params.get("sessao", DEFAULT_SESSAO)
+    await send_initial_state(websocket, sessao_param)
 
     try:
         while True:
@@ -991,7 +1019,7 @@ async def websocket_endpoint(websocket: WebSocket):
             message = json.loads(data)
             acao = message.get("acao")
             
-            sessao = message['sessao']
+            sessao = message.get('sessao', sessao_param or DEFAULT_SESSAO)
             usuario = message['usuario_id']
 
             # --- AÇÃO: BLOQUEAR ASSENTO (Usuário Clicou) ---
