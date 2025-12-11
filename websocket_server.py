@@ -5,6 +5,8 @@ import grpc
 import time
 import asyncio
 import logging
+from pathlib import Path
+from threading import Lock
 
 HTML_CONTENT = """
 <!DOCTYPE html>
@@ -340,6 +342,38 @@ HTML_CONTENT = """
             border:2px solid var(--accent);
             background:transparent;
         }
+        .payment-section{
+            background:var(--panel-light);
+            border-radius:18px;
+            padding:18px 22px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            flex-wrap:wrap;
+            gap:14px;
+        }
+        .primary-button{
+            background:var(--accent-strong);
+            color:#fff;
+            border:none;
+            border-radius:999px;
+            padding:12px 26px;
+            font-weight:600;
+            font-size:0.95rem;
+            cursor:pointer;
+            transition:opacity .2s ease, transform .2s ease, box-shadow .2s ease;
+            box-shadow:0 10px 25px rgba(78,92,255,.35);
+        }
+        .primary-button:disabled{
+            opacity:0.4;
+            cursor:not-allowed;
+            box-shadow:none;
+            transform:none;
+        }
+        .payment-hint{
+            color:var(--text-soft);
+            font-size:0.9rem;
+        }
         .status-panel{
             background:var(--panel-dark);
             border-radius:18px;
@@ -365,6 +399,80 @@ HTML_CONTENT = """
             background:rgba(255,255,255,.04);
             padding:8px 12px;
             border-radius:12px;
+        }
+        .modal{
+            position:fixed;
+            inset:0;
+            background:rgba(3,8,17,.78);
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            visibility:hidden;
+            opacity:0;
+            transition:opacity .2s ease, visibility .2s ease;
+            padding:20px;
+            z-index:20;
+        }
+        .modal.visible{
+            visibility:visible;
+            opacity:1;
+        }
+        .modal-card{
+            background:var(--panel);
+            border-radius:20px;
+            width:min(460px,100%);
+            padding:28px;
+            box-shadow:0 30px 60px rgba(0,0,0,.5);
+            display:flex;
+            flex-direction:column;
+            gap:18px;
+            position:relative;
+        }
+        .modal-card h3{
+            margin-bottom:6px;
+        }
+        .modal-close{
+            position:absolute;
+            top:18px;
+            right:22px;
+            background:transparent;
+            border:none;
+            color:#fff;
+            font-size:1.5rem;
+            cursor:pointer;
+        }
+        .form-grid{
+            display:flex;
+            flex-direction:column;
+            gap:14px;
+        }
+        .form-grid label{
+            font-size:0.85rem;
+            color:var(--text-soft);
+            display:flex;
+            flex-direction:column;
+            gap:6px;
+        }
+        .form-grid input{
+            border-radius:12px;
+            border:1px solid rgba(255,255,255,.15);
+            background:var(--panel-dark);
+            padding:12px;
+            color:#fff;
+            font-size:0.95rem;
+        }
+        .form-actions{
+            display:flex;
+            justify-content:flex-end;
+            gap:12px;
+        }
+        .ghost-button{
+            background:transparent;
+            border:1px solid rgba(255,255,255,.25);
+            color:#fff;
+            border-radius:999px;
+            padding:10px 20px;
+            cursor:pointer;
         }
         @media (max-width:950px){
             .seat-layout{
@@ -434,11 +542,47 @@ HTML_CONTENT = """
                 <div class="legend-item"><span class="legend-swatch wheelchair"></span>Cadeirante</div>
             </div>
 
+            <div class="payment-section">
+                <div>
+                    <p style="font-weight:600;">Pagamento</p>
+                    <p class="payment-hint" id="payment-hint">Selecione ao menos uma poltrona.</p>
+                </div>
+                <button id="confirm-btn" class="primary-button" type="button" disabled>Confirmar pagamento</button>
+            </div>
+
             <div class="status-panel">
                 <p id="status-text" class="status-text" data-tone="info">Conectando ao servidor...</p>
                 <ul class="activity-feed" id="activity-feed"></ul>
             </div>
         </section>
+    </div>
+
+    <div class="modal" id="payment-modal">
+        <div class="modal-card">
+            <button class="modal-close" type="button" data-close-modal>&times;</button>
+            <div>
+                <h3>Confirmar pagamento</h3>
+                <p class="payment-hint" id="seat-summary">Selecione ao menos uma poltrona.</p>
+            </div>
+            <form id="payment-form" class="form-grid">
+                <label>
+                    Nome completo
+                    <input type="text" name="nomeCompleto" placeholder="Ex.: Maria Oliveira" required />
+                </label>
+                <label>
+                    CPF
+                    <input type="text" name="cpf" placeholder="000.000.000-00" required />
+                </label>
+                <label>
+                    Contato
+                    <input type="text" name="contato" placeholder="(00) 00000-0000" required />
+                </label>
+                <div class="form-actions">
+                    <button type="button" class="ghost-button" data-close-modal>Cancelar</button>
+                    <button type="submit" class="primary-button" id="submit-payment-btn">Confirmar</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <script>
@@ -458,6 +602,13 @@ HTML_CONTENT = """
         const zoomOutBtn = document.getElementById("zoom-out");
         const rowLabelsLeft = document.getElementById("row-labels-left");
         const rowLabelsRight = document.getElementById("row-labels-right");
+        const paymentButton = document.getElementById("confirm-btn");
+        const paymentHint = document.getElementById("payment-hint");
+        const paymentModal = document.getElementById("payment-modal");
+        const paymentForm = document.getElementById("payment-form");
+        const seatSummary = document.getElementById("seat-summary");
+        const submitPaymentBtn = document.getElementById("submit-payment-btn");
+        const modalCloseButtons = paymentModal.querySelectorAll("[data-close-modal]");
 
         const randomToken = (typeof crypto !== "undefined" && crypto.randomUUID)
             ? crypto.randomUUID().slice(0, 6)
@@ -467,7 +618,22 @@ HTML_CONTENT = """
 
         const seatElements = new Map();
         const seatState = new Map();
+        const selectedSeats = new Set();
         let socket = null;
+
+        function updatePaymentActionState(){
+            const hasSelection = selectedSeats.size > 0;
+            paymentButton.disabled = !hasSelection;
+            const seats = Array.from(selectedSeats).sort();
+            if(hasSelection){
+                const list = seats.join(", ");
+                paymentHint.textContent = `Selecionado(s): ${list}`;
+                seatSummary.textContent = `Você está confirmando ${seats.length} assento(s): ${list}`;
+            }else{
+                paymentHint.textContent = "Selecione ao menos uma poltrona.";
+                seatSummary.textContent = "Selecione ao menos uma poltrona.";
+            }
+        }
 
         function pad(num){
             return String(num).padStart(2,"0");
@@ -531,9 +697,15 @@ HTML_CONTENT = """
             if(!element) return;
             element.classList.remove("available","selected","blocked","reserved","pending");
             element.classList.add(state);
-            const lockStates = new Set(["selected","blocked","reserved","pending"]);
-            element.disabled = lockStates.has(state);
+            const lockStates = ["selected","blocked","reserved","pending"];
+            element.disabled = lockStates.includes(state);
             seatState.set(seatId, state);
+            if(state === "selected"){
+                selectedSeats.add(seatId);
+            }else{
+                selectedSeats.delete(seatId);
+            }
+            updatePaymentActionState();
             if(toneMessage){
                 setStatus(toneMessage.text, toneMessage.tone);
             }
@@ -553,6 +725,73 @@ HTML_CONTENT = """
                 activityFeed.removeChild(activityFeed.lastChild);
             }
         }
+
+        function openPaymentModal(){
+            if(paymentButton.disabled) return;
+            paymentModal.classList.add("visible");
+        }
+
+        function closePaymentModal(){
+            paymentModal.classList.remove("visible");
+            paymentForm.reset();
+            submitPaymentBtn.disabled = false;
+        }
+
+        function handlePaymentSubmit(event){
+            event.preventDefault();
+            if(selectedSeats.size === 0){
+                setStatus("Selecione ao menos uma poltrona para confirmar.", "error");
+                return;
+            }
+            if(!socket || socket.readyState !== WebSocket.OPEN){
+                setStatus("Sem conexão com o servidor.", "error");
+                return;
+            }
+            submitPaymentBtn.disabled = true;
+            const formData = new FormData(paymentForm);
+            const payload = {
+                nomeCompleto: (formData.get("nomeCompleto") || "").trim(),
+                cpf: (formData.get("cpf") || "").trim(),
+                contato: (formData.get("contato") || "").trim()
+            };
+            socket.send(JSON.stringify({
+                acao:"confirmar_pagamento",
+                sessao:SESSION_ID,
+                assentos:Array.from(selectedSeats),
+                usuario_id:USER_ID,
+                pagamento:payload
+            }));
+            setStatus("Processando pagamento...", "info");
+        }
+
+        function handlePaymentResponse(data){
+            submitPaymentBtn.disabled = false;
+            const confirmed = data.assentos_confirmados || [];
+            const failed = data.assentos_falha || [];
+            if((data.status === "ok" || data.status === "parcial") && confirmed.length){
+                closePaymentModal();
+                pushActivity(`Pagamento confirmado para ${confirmed.join(", ")}.`);
+                setStatus(data.mensagem, data.status === "ok" ? "success" : "info");
+            }else if(data.status === "erro"){
+                setStatus(data.mensagem || "Não foi possível confirmar o pagamento.", "error");
+            }
+
+            confirmed.forEach(seat => selectedSeats.delete(seat));
+            updatePaymentActionState();
+
+            if(failed.length){
+                pushActivity(`Falha ao confirmar: ${failed.join(", ")}.`);
+            }
+        }
+
+        paymentButton.addEventListener("click", openPaymentModal);
+        modalCloseButtons.forEach(btn => btn.addEventListener("click", closePaymentModal));
+        paymentModal.addEventListener("click", (event) => {
+            if(event.target === paymentModal){
+                closePaymentModal();
+            }
+        });
+        paymentForm.addEventListener("submit", handlePaymentSubmit);
 
         function handleSeatClick(seatId){
             const current = seatState.get(seatId);
@@ -600,6 +839,10 @@ HTML_CONTENT = """
         }
 
         function handleResponse(data){
+            if(data.tipo === "confirmacao_pagamento"){
+                handlePaymentResponse(data);
+                return;
+            }
             if(data.assento){
                 const element = seatElements.get(data.assento);
                 if(element){
@@ -611,7 +854,7 @@ HTML_CONTENT = """
                     updateSeatState(data.assento, "available");
                 }
                 setStatus(data.mensagem, "error");
-            }else{
+            }else if(data.status){
                 setStatus(data.mensagem, "success");
             }
         }
@@ -660,12 +903,34 @@ HTML_CONTENT = """
         });
 
         buildSeatMap();
+        updatePaymentActionState();
         setZoom(100);
         connectWebSocket();
     </script>
 </body>
 </html>
 """
+
+RESERVAS_FILE = Path("reservas_confirmadas.json")
+reservas_lock = Lock()
+
+
+def append_confirmed_reservation(entry: dict) -> None:
+    """Acrescenta uma reserva confirmada no arquivo JSON local."""
+    with reservas_lock:
+        if RESERVAS_FILE.exists():
+            try:
+                data = json.loads(RESERVAS_FILE.read_text(encoding="utf-8"))
+            except json.JSONDecodeError:
+                data = []
+        else:
+            data = []
+        data.append(entry)
+        RESERVAS_FILE.write_text(
+            json.dumps(data, ensure_ascii=False, indent=2),
+            encoding="utf-8"
+        )
+
 
 # Configuração
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - WebSocket - %(levelname)s - %(message)s')
@@ -727,14 +992,13 @@ async def websocket_endpoint(websocket: WebSocket):
             acao = message.get("acao")
             
             sessao = message['sessao']
-            assento_num = message['assento']
             usuario = message['usuario_id']
-            
-            assento_id = cinema_pb2.AssentoID(sessao_id=sessao, assento_num=assento_num)
-            request_grpc = cinema_pb2.ReservaRequest(assento=assento_id, usuario_id=usuario)
 
             # --- AÇÃO: BLOQUEAR ASSENTO (Usuário Clicou) ---
             if acao == "bloquear":
+                assento_num = message['assento']
+                assento_id = cinema_pb2.AssentoID(sessao_id=sessao, assento_num=assento_num)
+                request_grpc = cinema_pb2.ReservaRequest(assento=assento_id, usuario_id=usuario)
                 try:
                     # Chama o gRPC para tentar bloquear (adquirir o lock no Redis)
                     response = grpc_stub.ReservarAssento(request_grpc)
@@ -768,7 +1032,74 @@ async def websocket_endpoint(websocket: WebSocket):
                         "assento": assento_num
                     }))
             
-            # --- Adicione mais ações aqui (e.g., confirmar pagamento, cancelar) ---
+            elif acao == "confirmar_pagamento":
+                assentos_payload = message.get("assentos") or []
+                pagamento = message.get("pagamento") or {}
+                required_fields = ("nomeCompleto", "cpf", "contato")
+
+                if not assentos_payload or not all(pagamento.get(field) for field in required_fields):
+                    await websocket.send_text(json.dumps({
+                        "status": "erro",
+                        "tipo": "confirmacao_pagamento",
+                        "mensagem": "Informe nome completo, CPF, contato e ao menos um assento.",
+                        "assentos_confirmados": [],
+                        "assentos_falha": assentos_payload
+                    }))
+                    continue
+
+                confirmados: list[str] = []
+                falhas: list[str] = []
+
+                for assento in assentos_payload:
+                    assento_id = cinema_pb2.AssentoID(sessao_id=sessao, assento_num=assento)
+                    request_confirm = cinema_pb2.ReservaRequest(assento=assento_id, usuario_id=usuario)
+                    try:
+                        response = grpc_stub.ConfirmarPagamento(request_confirm)
+                    except grpc.RpcError as e:
+                        logging.error(f"Erro gRPC ao confirmar pagamento: {e}")
+                        falhas.append(assento)
+                        continue
+
+                    if response.sucesso:
+                        confirmados.append(assento)
+                        await broadcast({
+                            "evento": "assento_reservado",
+                            "assento": assento,
+                            "usuario_bloqueador": usuario
+                        })
+                    else:
+                        falhas.append(assento)
+
+                if confirmados:
+                    append_confirmed_reservation({
+                        "sessao_id": sessao,
+                        "assentos": confirmados,
+                        "usuario_id": usuario,
+                        "nome_completo": pagamento["nomeCompleto"],
+                        "cpf": pagamento["cpf"],
+                        "contato": pagamento["contato"],
+                        "timestamp": time.time()
+                    })
+
+                if confirmados and not falhas:
+                    status = "ok"
+                    mensagem = "Pagamento confirmado! Seus assentos foram reservados."
+                elif confirmados and falhas:
+                    status = "parcial"
+                    mensagem = "Alguns assentos foram confirmados. Revise os restantes."
+                else:
+                    status = "erro"
+                    mensagem = "Não foi possível confirmar os assentos selecionados."
+
+                await websocket.send_text(json.dumps({
+                    "status": status,
+                    "tipo": "confirmacao_pagamento",
+                    "mensagem": mensagem,
+                    "assentos_confirmados": confirmados,
+                    "assentos_falha": falhas
+                }))
+            
+            # --- Adicione mais ações aqui (e.g., cancelar) ---
             
     except Exception as e:
         logging.warning(f"Conexão fechada inesperadamente: {e}")

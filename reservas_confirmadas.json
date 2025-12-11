@@ -1,0 +1,24 @@
+[
+  {
+    "sessao_id": "S001",
+    "assentos": [
+      "C06"
+    ],
+    "usuario_id": "USR-204D5F",
+    "nome_completo": "teste",
+    "cpf": "",
+    "contato": "",
+    "timestamp": 1765412544.0035386
+  },
+  {
+    "sessao_id": "S001",
+    "assentos": [
+      "G09"
+    ],
+    "usuario_id": "USR-CB0C89",
+    "nome_completo": "pedro",
+    "cpf": "35872358902",
+    "contato": "94023750289375",
+    "timestamp": 1765414211.0309815
+  }
+]
