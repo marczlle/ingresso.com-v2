@@ -1,8 +1,9 @@
 import redis
 import time
+import os
 
 # Configuração
-REDIS_HOST = 'localhost'
+REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
 REDIS_PORT = 6379
 TIMEOUT_SEGUNDOS = 300 # 5 minutos para o bloqueio
 

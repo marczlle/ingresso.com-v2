@@ -8,6 +8,7 @@ import logging
 from pathlib import Path
 from threading import Lock
 from dotenv import load_dotenv
+import os
 
 from seat_state_service import SeatStateService
 from email_service import EmailService
@@ -973,7 +974,8 @@ active_connections: list[WebSocket] = []
 # Importe os stubs gRPC (garanta que cinema_pb2 foi gerado)
 import cinema_pb2
 import cinema_pb2_grpc
-GRPC_HOST_PORT = 'localhost:50051'
+GRPC_HOST = os.getenv('GRPC_HOST', 'localhost')
+GRPC_HOST_PORT = f"{GRPC_HOST}:50051"
 channel = grpc.insecure_channel(GRPC_HOST_PORT)
 grpc_stub = cinema_pb2_grpc.ReservaStub(channel)
 

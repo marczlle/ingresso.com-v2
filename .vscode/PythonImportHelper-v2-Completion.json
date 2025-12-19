@@ -1,0 +1,535 @@
+[
+    {
+        "label": "grpc",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "grpc",
+        "description": "grpc",
+        "detail": "grpc",
+        "documentation": {}
+    },
+    {
+        "label": "cinema_pb2",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "cinema_pb2",
+        "description": "cinema_pb2",
+        "detail": "cinema_pb2",
+        "documentation": {}
+    },
+    {
+        "label": "cinema_pb2_grpc",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "cinema_pb2_grpc",
+        "description": "cinema_pb2_grpc",
+        "detail": "cinema_pb2_grpc",
+        "documentation": {}
+    },
+    {
+        "label": "time",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "time",
+        "description": "time",
+        "detail": "time",
+        "documentation": {}
+    },
+    {
+        "label": "futures",
+        "importPath": "concurrent",
+        "description": "concurrent",
+        "isExtraImport": true,
+        "detail": "concurrent",
+        "documentation": {}
+    },
+    {
+        "label": "SeatStateService",
+        "importPath": "seat_state_service",
+        "description": "seat_state_service",
+        "isExtraImport": true,
+        "detail": "seat_state_service",
+        "documentation": {}
+    },
+    {
+        "label": "SeatStateService",
+        "importPath": "seat_state_service",
+        "description": "seat_state_service",
+        "isExtraImport": true,
+        "detail": "seat_state_service",
+        "documentation": {}
+    },
+    {
+        "label": "NotificationProducer",
+        "importPath": "notification_producer",
+        "description": "notification_producer",
+        "isExtraImport": true,
+        "detail": "notification_producer",
+        "documentation": {}
+    },
+    {
+        "label": "logging",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "logging",
+        "description": "logging",
+        "detail": "logging",
+        "documentation": {}
+    },
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "smtplib",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "smtplib",
+        "description": "smtplib",
+        "detail": "smtplib",
+        "documentation": {}
+    },
+    {
+        "label": "EmailMessage",
+        "importPath": "email.message",
+        "description": "email.message",
+        "isExtraImport": true,
+        "detail": "email.message",
+        "documentation": {}
+    },
+    {
+        "label": "Sequence",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "KafkaConsumer",
+        "importPath": "kafka",
+        "description": "kafka",
+        "isExtraImport": true,
+        "detail": "kafka",
+        "documentation": {}
+    },
+    {
+        "label": "KafkaProducer",
+        "importPath": "kafka",
+        "description": "kafka",
+        "isExtraImport": true,
+        "detail": "kafka",
+        "documentation": {}
+    },
+    {
+        "label": "json",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "json",
+        "description": "json",
+        "detail": "json",
+        "documentation": {}
+    },
+    {
+        "label": "redis",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "redis",
+        "description": "redis",
+        "detail": "redis",
+        "documentation": {}
+    },
+    {
+        "label": "requests",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "requests",
+        "description": "requests",
+        "detail": "requests",
+        "documentation": {}
+    },
+    {
+        "label": "FastAPI",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "WebSocket",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "Request",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "HTMLResponse",
+        "importPath": "fastapi.responses",
+        "description": "fastapi.responses",
+        "isExtraImport": true,
+        "detail": "fastapi.responses",
+        "documentation": {}
+    },
+    {
+        "label": "asyncio",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "asyncio",
+        "description": "asyncio",
+        "detail": "asyncio",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "Lock",
+        "importPath": "threading",
+        "description": "threading",
+        "isExtraImport": true,
+        "detail": "threading",
+        "documentation": {}
+    },
+    {
+        "label": "load_dotenv",
+        "importPath": "dotenv",
+        "description": "dotenv",
+        "isExtraImport": true,
+        "detail": "dotenv",
+        "documentation": {}
+    },
+    {
+        "label": "EmailService",
+        "importPath": "email_service",
+        "description": "email_service",
+        "isExtraImport": true,
+        "detail": "email_service",
+        "documentation": {}
+    },
+    {
+        "label": "run_test",
+        "kind": 2,
+        "importPath": "tests.client",
+        "description": "tests.client",
+        "peekOfCode": "def run_test(usuario_id, assento_id, sessao_id):\n    # Cria a conexão gRPC\n    with grpc.insecure_channel(HOST_PORT) as channel:\n        stub = cinema_pb2_grpc.ReservaStub(channel)\n        assento = cinema_pb2.AssentoID(sessao_id=sessao_id, assento_num=assento_id)\n        request = cinema_pb2.ReservaRequest(assento=assento, usuario_id=usuario_id)\n        print(f\"\\n--- {usuario_id} tentando RESERVAR Assento {assento_id} ---\")\n        # 1. Tenta Reservar o Assento (Bloqueio Distribuído no Redis)\n        try:\n            response = stub.ReservarAssento(request)",
+        "detail": "tests.client",
+        "documentation": {}
+    },
+    {
+        "label": "test_concorrencia",
+        "kind": 2,
+        "importPath": "tests.client",
+        "description": "tests.client",
+        "peekOfCode": "def test_concorrencia():\n    print(\"=== Teste de Fluxo Completo: Usuário 1 (Sucesso) ===\")\n    # 1. Usuário 1 faz a reserva e confirma o pagamento (Deve ter sucesso)\n    sucesso_user_1 = run_test(TEST_USUARIO_1, TEST_ASSENTO, TEST_SESSAO)\n    if sucesso_user_1:\n        print(\"\\n=== Teste de Concorrência: Usuário 2 (Deve Falhar) ===\")\n        # 2. Usuário 2 tenta reservar o MESMO assento (Deve falhar no Bloqueio)\n        run_test(TEST_USUARIO_2, TEST_ASSENTO, TEST_SESSAO)\nif __name__ == '__main__':\n    test_concorrencia()",
+        "detail": "tests.client",
+        "documentation": {}
+    },
+    {
+        "label": "HOST_PORT",
+        "kind": 5,
+        "importPath": "tests.client",
+        "description": "tests.client",
+        "peekOfCode": "HOST_PORT = 'localhost:50051'\n# Dados para o Teste\nTEST_SESSAO = \"S001\"\nTEST_ASSENTO = \"A5\"\nTEST_USUARIO_1 = \"Marcelo_1\"\nTEST_USUARIO_2 = \"Concorrente_2\"\ndef run_test(usuario_id, assento_id, sessao_id):\n    # Cria a conexão gRPC\n    with grpc.insecure_channel(HOST_PORT) as channel:\n        stub = cinema_pb2_grpc.ReservaStub(channel)",
+        "detail": "tests.client",
+        "documentation": {}
+    },
+    {
+        "label": "TEST_SESSAO",
+        "kind": 5,
+        "importPath": "tests.client",
+        "description": "tests.client",
+        "peekOfCode": "TEST_SESSAO = \"S001\"\nTEST_ASSENTO = \"A5\"\nTEST_USUARIO_1 = \"Marcelo_1\"\nTEST_USUARIO_2 = \"Concorrente_2\"\ndef run_test(usuario_id, assento_id, sessao_id):\n    # Cria a conexão gRPC\n    with grpc.insecure_channel(HOST_PORT) as channel:\n        stub = cinema_pb2_grpc.ReservaStub(channel)\n        assento = cinema_pb2.AssentoID(sessao_id=sessao_id, assento_num=assento_id)\n        request = cinema_pb2.ReservaRequest(assento=assento, usuario_id=usuario_id)",
+        "detail": "tests.client",
+        "documentation": {}
+    },
+    {
+        "label": "TEST_ASSENTO",
+        "kind": 5,
+        "importPath": "tests.client",
+        "description": "tests.client",
+        "peekOfCode": "TEST_ASSENTO = \"A5\"\nTEST_USUARIO_1 = \"Marcelo_1\"\nTEST_USUARIO_2 = \"Concorrente_2\"\ndef run_test(usuario_id, assento_id, sessao_id):\n    # Cria a conexão gRPC\n    with grpc.insecure_channel(HOST_PORT) as channel:\n        stub = cinema_pb2_grpc.ReservaStub(channel)\n        assento = cinema_pb2.AssentoID(sessao_id=sessao_id, assento_num=assento_id)\n        request = cinema_pb2.ReservaRequest(assento=assento, usuario_id=usuario_id)\n        print(f\"\\n--- {usuario_id} tentando RESERVAR Assento {assento_id} ---\")",
+        "detail": "tests.client",
+        "documentation": {}
+    },
+    {
+        "label": "TEST_USUARIO_1",
+        "kind": 5,
+        "importPath": "tests.client",
+        "description": "tests.client",
+        "peekOfCode": "TEST_USUARIO_1 = \"Marcelo_1\"\nTEST_USUARIO_2 = \"Concorrente_2\"\ndef run_test(usuario_id, assento_id, sessao_id):\n    # Cria a conexão gRPC\n    with grpc.insecure_channel(HOST_PORT) as channel:\n        stub = cinema_pb2_grpc.ReservaStub(channel)\n        assento = cinema_pb2.AssentoID(sessao_id=sessao_id, assento_num=assento_id)\n        request = cinema_pb2.ReservaRequest(assento=assento, usuario_id=usuario_id)\n        print(f\"\\n--- {usuario_id} tentando RESERVAR Assento {assento_id} ---\")\n        # 1. Tenta Reservar o Assento (Bloqueio Distribuído no Redis)",
+        "detail": "tests.client",
+        "documentation": {}
+    },
+    {
+        "label": "TEST_USUARIO_2",
+        "kind": 5,
+        "importPath": "tests.client",
+        "description": "tests.client",
+        "peekOfCode": "TEST_USUARIO_2 = \"Concorrente_2\"\ndef run_test(usuario_id, assento_id, sessao_id):\n    # Cria a conexão gRPC\n    with grpc.insecure_channel(HOST_PORT) as channel:\n        stub = cinema_pb2_grpc.ReservaStub(channel)\n        assento = cinema_pb2.AssentoID(sessao_id=sessao_id, assento_num=assento_id)\n        request = cinema_pb2.ReservaRequest(assento=assento, usuario_id=usuario_id)\n        print(f\"\\n--- {usuario_id} tentando RESERVAR Assento {assento_id} ---\")\n        # 1. Tenta Reservar o Assento (Bloqueio Distribuído no Redis)\n        try:",
+        "detail": "tests.client",
+        "documentation": {}
+    },
+    {
+        "label": "ReservaServicer",
+        "kind": 6,
+        "importPath": "booking_service_server",
+        "description": "booking_service_server",
+        "peekOfCode": "class ReservaServicer(cinema_pb2_grpc.ReservaServicer):\n    \"\"\"Implementa o serviço gRPC de Reserva.\"\"\"\n    def __init__(self):\n        self.seat_service = SeatStateService()\n        self.producer = NotificationProducer()\n    def ReservarAssento(self, request: cinema_pb2.ReservaRequest, context) -> cinema_pb2.ReservaResponse:\n        sessao = request.assento.sessao_id\n        assento_num = request.assento.assento_num\n        usuario = request.usuario_id\n        print(f\"Recebida requisição de reserva: S:{sessao}, A:{assento_num} por {usuario}\")",
+        "detail": "booking_service_server",
+        "documentation": {}
+    },
+    {
+        "label": "serve",
+        "kind": 2,
+        "importPath": "booking_service_server",
+        "description": "booking_service_server",
+        "peekOfCode": "def serve():\n    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))\n    cinema_pb2_grpc.add_ReservaServicer_to_server(ReservaServicer(), server)\n    server.add_insecure_port('[::]:50051')\n    server.start()\n    print(\"Servidor gRPC de Reserva iniciado na porta 50051...\")\n    server.wait_for_termination()\nif __name__ == '__main__':\n    serve()",
+        "detail": "booking_service_server",
+        "documentation": {}
+    },
+    {
+        "label": "EmailService",
+        "kind": 6,
+        "importPath": "email_service",
+        "description": "email_service",
+        "peekOfCode": "class EmailService:\n    \"\"\"Serviço simples para envio de emails de confirmação.\"\"\"\n    def __init__(self) -> None:\n        self.host = os.getenv(\"SMTP_HOST\", \"localhost\")\n        self.port = int(os.getenv(\"SMTP_PORT\", \"1025\"))\n        self.username = os.getenv(\"SMTP_USERNAME\", \"\")\n        self.password = os.getenv(\"SMTP_PASSWORD\", \"\")\n        self.use_tls = _env_bool(\"SMTP_USE_TLS\", \"false\")\n        self.from_address = os.getenv(\"SMTP_FROM\", \"cinema@example.com\")\n    def _connect(self) -> smtplib.SMTP:",
+        "detail": "email_service",
+        "documentation": {}
+    },
+    {
+        "label": "consume_reservas",
+        "kind": 2,
+        "importPath": "notification_consumer",
+        "description": "notification_consumer",
+        "peekOfCode": "def consume_reservas():\n    # PEGAR DO DOCKER ou usar localhost se rodar fora\n    kafka_server = os.getenv('KAFKA_BOOTSTRAP_SERVERS', 'localhost:9092')\n    logging.info(f\"Tentando conectar ao Kafka em: {kafka_server}\")\n    # Loop de retry simples para esperar o Kafka subir\n    while True:\n        try:\n            consumer = KafkaConsumer(\n                'reservas_confirmadas',\n                bootstrap_servers=[kafka_server], # <--- AQUI ESTAVA O ERRO (estava 'localhost')",
+        "detail": "notification_consumer",
+        "documentation": {}
+    },
+    {
+        "label": "NotificationProducer",
+        "kind": 6,
+        "importPath": "notification_producer",
+        "description": "notification_producer",
+        "peekOfCode": "class NotificationProducer:\n    def __init__(self):\n        # Pega a configuração do ambiente ou usa localhost (fallback)\n        self.bootstrap_servers = [os.getenv('KAFKA_BOOTSTRAP_SERVERS', 'localhost:9092')]\n        self.TOPIC = 'reservas_confirmadas'\n        self.producer = None\n        self._connect()\n    def _connect(self):\n        \"\"\"Tenta conectar ao Kafka com retries até conseguir.\"\"\"\n        while True:",
+        "detail": "notification_producer",
+        "documentation": {}
+    },
+    {
+        "label": "start_redis_listener",
+        "kind": 2,
+        "importPath": "redis_listener",
+        "description": "redis_listener",
+        "peekOfCode": "def start_redis_listener():\n    r = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT)\n    # Cria um objeto PubSub para escutar o canal\n    pubsub = r.pubsub()\n    pubsub.subscribe(EXPIRY_CHANNEL)\n    logging.info(\"Escutando eventos de expiração do Redis...\")\n    for message in pubsub.listen():\n        if message['type'] == 'message':\n            # A chave expirada é o valor da mensagem\n            key = message['data'].decode('utf-8')",
+        "detail": "redis_listener",
+        "documentation": {}
+    },
+    {
+        "label": "REDIS_HOST",
+        "kind": 5,
+        "importPath": "redis_listener",
+        "description": "redis_listener",
+        "peekOfCode": "REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')\nREDIS_PORT = 6379\n# Canal do Redis que monitora a expiração de chaves\nEXPIRY_CHANNEL = '__keyevent@0__:expired' \n# Endpoint do WebSocket Service para notificar sobre a liberação\nWS_HOST = os.getenv('WS_HOST', 'localhost')\nWS_NOTIFY_URL = f'http://{WS_HOST}:8000/notify_liberacao'\ndef start_redis_listener():\n    r = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT)\n    # Cria um objeto PubSub para escutar o canal",
+        "detail": "redis_listener",
+        "documentation": {}
+    },
+    {
+        "label": "REDIS_PORT",
+        "kind": 5,
+        "importPath": "redis_listener",
+        "description": "redis_listener",
+        "peekOfCode": "REDIS_PORT = 6379\n# Canal do Redis que monitora a expiração de chaves\nEXPIRY_CHANNEL = '__keyevent@0__:expired' \n# Endpoint do WebSocket Service para notificar sobre a liberação\nWS_HOST = os.getenv('WS_HOST', 'localhost')\nWS_NOTIFY_URL = f'http://{WS_HOST}:8000/notify_liberacao'\ndef start_redis_listener():\n    r = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT)\n    # Cria um objeto PubSub para escutar o canal\n    pubsub = r.pubsub()",
+        "detail": "redis_listener",
+        "documentation": {}
+    },
+    {
+        "label": "EXPIRY_CHANNEL",
+        "kind": 5,
+        "importPath": "redis_listener",
+        "description": "redis_listener",
+        "peekOfCode": "EXPIRY_CHANNEL = '__keyevent@0__:expired' \n# Endpoint do WebSocket Service para notificar sobre a liberação\nWS_HOST = os.getenv('WS_HOST', 'localhost')\nWS_NOTIFY_URL = f'http://{WS_HOST}:8000/notify_liberacao'\ndef start_redis_listener():\n    r = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT)\n    # Cria um objeto PubSub para escutar o canal\n    pubsub = r.pubsub()\n    pubsub.subscribe(EXPIRY_CHANNEL)\n    logging.info(\"Escutando eventos de expiração do Redis...\")",
+        "detail": "redis_listener",
+        "documentation": {}
+    },
+    {
+        "label": "WS_HOST",
+        "kind": 5,
+        "importPath": "redis_listener",
+        "description": "redis_listener",
+        "peekOfCode": "WS_HOST = os.getenv('WS_HOST', 'localhost')\nWS_NOTIFY_URL = f'http://{WS_HOST}:8000/notify_liberacao'\ndef start_redis_listener():\n    r = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT)\n    # Cria um objeto PubSub para escutar o canal\n    pubsub = r.pubsub()\n    pubsub.subscribe(EXPIRY_CHANNEL)\n    logging.info(\"Escutando eventos de expiração do Redis...\")\n    for message in pubsub.listen():\n        if message['type'] == 'message':",
+        "detail": "redis_listener",
+        "documentation": {}
+    },
+    {
+        "label": "WS_NOTIFY_URL",
+        "kind": 5,
+        "importPath": "redis_listener",
+        "description": "redis_listener",
+        "peekOfCode": "WS_NOTIFY_URL = f'http://{WS_HOST}:8000/notify_liberacao'\ndef start_redis_listener():\n    r = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT)\n    # Cria um objeto PubSub para escutar o canal\n    pubsub = r.pubsub()\n    pubsub.subscribe(EXPIRY_CHANNEL)\n    logging.info(\"Escutando eventos de expiração do Redis...\")\n    for message in pubsub.listen():\n        if message['type'] == 'message':\n            # A chave expirada é o valor da mensagem",
+        "detail": "redis_listener",
+        "documentation": {}
+    },
+    {
+        "label": "SeatStateService",
+        "kind": 6,
+        "importPath": "seat_state_service",
+        "description": "seat_state_service",
+        "peekOfCode": "class SeatStateService:\n    def __init__(self):\n        self.r = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=0, decode_responses=True)\n    def _get_key(self, assento_id: str, sessao_id: str):\n        \"\"\"Formata a chave no Redis: 'sessao:123:assento:A5'\"\"\"\n        return f\"sessao:{sessao_id}:assento:{assento_id}\"\n    def bloquear_assento(self, assento_id: str, sessao_id: str, usuario_id: str) -> bool:\n        \"\"\"\n        Tenta adquirir um bloqueio distribuído para o assento.\n        Usa o comando 'SET NX EX' do Redis: SET if Not eXists, com EXpiration.",
+        "detail": "seat_state_service",
+        "documentation": {}
+    },
+    {
+        "label": "REDIS_HOST",
+        "kind": 5,
+        "importPath": "seat_state_service",
+        "description": "seat_state_service",
+        "peekOfCode": "REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')\nREDIS_PORT = 6379\nTIMEOUT_SEGUNDOS = 300 # 5 minutos para o bloqueio\nclass SeatStateService:\n    def __init__(self):\n        self.r = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=0, decode_responses=True)\n    def _get_key(self, assento_id: str, sessao_id: str):\n        \"\"\"Formata a chave no Redis: 'sessao:123:assento:A5'\"\"\"\n        return f\"sessao:{sessao_id}:assento:{assento_id}\"\n    def bloquear_assento(self, assento_id: str, sessao_id: str, usuario_id: str) -> bool:",
+        "detail": "seat_state_service",
+        "documentation": {}
+    },
+    {
+        "label": "REDIS_PORT",
+        "kind": 5,
+        "importPath": "seat_state_service",
+        "description": "seat_state_service",
+        "peekOfCode": "REDIS_PORT = 6379\nTIMEOUT_SEGUNDOS = 300 # 5 minutos para o bloqueio\nclass SeatStateService:\n    def __init__(self):\n        self.r = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=0, decode_responses=True)\n    def _get_key(self, assento_id: str, sessao_id: str):\n        \"\"\"Formata a chave no Redis: 'sessao:123:assento:A5'\"\"\"\n        return f\"sessao:{sessao_id}:assento:{assento_id}\"\n    def bloquear_assento(self, assento_id: str, sessao_id: str, usuario_id: str) -> bool:\n        \"\"\"",
+        "detail": "seat_state_service",
+        "documentation": {}
+    },
+    {
+        "label": "TIMEOUT_SEGUNDOS",
+        "kind": 5,
+        "importPath": "seat_state_service",
+        "description": "seat_state_service",
+        "peekOfCode": "TIMEOUT_SEGUNDOS = 300 # 5 minutos para o bloqueio\nclass SeatStateService:\n    def __init__(self):\n        self.r = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=0, decode_responses=True)\n    def _get_key(self, assento_id: str, sessao_id: str):\n        \"\"\"Formata a chave no Redis: 'sessao:123:assento:A5'\"\"\"\n        return f\"sessao:{sessao_id}:assento:{assento_id}\"\n    def bloquear_assento(self, assento_id: str, sessao_id: str, usuario_id: str) -> bool:\n        \"\"\"\n        Tenta adquirir um bloqueio distribuído para o assento.",
+        "detail": "seat_state_service",
+        "documentation": {}
+    },
+    {
+        "label": "append_confirmed_reservation",
+        "kind": 2,
+        "importPath": "websocket_server",
+        "description": "websocket_server",
+        "peekOfCode": "def append_confirmed_reservation(entry: dict) -> None:\n    \"\"\"Acrescenta uma reserva confirmada no arquivo JSON local.\"\"\"\n    with reservas_lock:\n        if RESERVAS_FILE.exists():\n            try:\n                data = json.loads(RESERVAS_FILE.read_text(encoding=\"utf-8\"))\n            except json.JSONDecodeError:\n                data = []\n        else:\n            data = []",
+        "detail": "websocket_server",
+        "documentation": {}
+    },
+    {
+        "label": "HTML_CONTENT",
+        "kind": 5,
+        "importPath": "websocket_server",
+        "description": "websocket_server",
+        "peekOfCode": "HTML_CONTENT = \"\"\"\n<!DOCTYPE html>\n<html lang=\"pt-BR\">\n<head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>Seleção de Assentos • Cinemas Costa Dourada</title>\n    <style>\n        :root {\n            --bg:#040b18;",
+        "detail": "websocket_server",
+        "documentation": {}
+    },
+    {
+        "label": "RESERVAS_FILE",
+        "kind": 5,
+        "importPath": "websocket_server",
+        "description": "websocket_server",
+        "peekOfCode": "RESERVAS_FILE = Path(\"reservas_confirmadas.json\")\nreservas_lock = Lock()\nseat_snapshot_service = SeatStateService()\nemail_service = EmailService()\nDEFAULT_SESSAO = \"S001\"\ndef append_confirmed_reservation(entry: dict) -> None:\n    \"\"\"Acrescenta uma reserva confirmada no arquivo JSON local.\"\"\"\n    with reservas_lock:\n        if RESERVAS_FILE.exists():\n            try:",
+        "detail": "websocket_server",
+        "documentation": {}
+    },
+    {
+        "label": "reservas_lock",
+        "kind": 5,
+        "importPath": "websocket_server",
+        "description": "websocket_server",
+        "peekOfCode": "reservas_lock = Lock()\nseat_snapshot_service = SeatStateService()\nemail_service = EmailService()\nDEFAULT_SESSAO = \"S001\"\ndef append_confirmed_reservation(entry: dict) -> None:\n    \"\"\"Acrescenta uma reserva confirmada no arquivo JSON local.\"\"\"\n    with reservas_lock:\n        if RESERVAS_FILE.exists():\n            try:\n                data = json.loads(RESERVAS_FILE.read_text(encoding=\"utf-8\"))",
+        "detail": "websocket_server",
+        "documentation": {}
+    },
+    {
+        "label": "seat_snapshot_service",
+        "kind": 5,
+        "importPath": "websocket_server",
+        "description": "websocket_server",
+        "peekOfCode": "seat_snapshot_service = SeatStateService()\nemail_service = EmailService()\nDEFAULT_SESSAO = \"S001\"\ndef append_confirmed_reservation(entry: dict) -> None:\n    \"\"\"Acrescenta uma reserva confirmada no arquivo JSON local.\"\"\"\n    with reservas_lock:\n        if RESERVAS_FILE.exists():\n            try:\n                data = json.loads(RESERVAS_FILE.read_text(encoding=\"utf-8\"))\n            except json.JSONDecodeError:",
+        "detail": "websocket_server",
+        "documentation": {}
+    },
+    {
+        "label": "email_service",
+        "kind": 5,
+        "importPath": "websocket_server",
+        "description": "websocket_server",
+        "peekOfCode": "email_service = EmailService()\nDEFAULT_SESSAO = \"S001\"\ndef append_confirmed_reservation(entry: dict) -> None:\n    \"\"\"Acrescenta uma reserva confirmada no arquivo JSON local.\"\"\"\n    with reservas_lock:\n        if RESERVAS_FILE.exists():\n            try:\n                data = json.loads(RESERVAS_FILE.read_text(encoding=\"utf-8\"))\n            except json.JSONDecodeError:\n                data = []",
+        "detail": "websocket_server",
+        "documentation": {}
+    },
+    {
+        "label": "DEFAULT_SESSAO",
+        "kind": 5,
+        "importPath": "websocket_server",
+        "description": "websocket_server",
+        "peekOfCode": "DEFAULT_SESSAO = \"S001\"\ndef append_confirmed_reservation(entry: dict) -> None:\n    \"\"\"Acrescenta uma reserva confirmada no arquivo JSON local.\"\"\"\n    with reservas_lock:\n        if RESERVAS_FILE.exists():\n            try:\n                data = json.loads(RESERVAS_FILE.read_text(encoding=\"utf-8\"))\n            except json.JSONDecodeError:\n                data = []\n        else:",
+        "detail": "websocket_server",
+        "documentation": {}
+    },
+    {
+        "label": "app",
+        "kind": 5,
+        "importPath": "websocket_server",
+        "description": "websocket_server",
+        "peekOfCode": "app = FastAPI()\nactive_connections: list[WebSocket] = []\n# --- Conexão gRPC com o Backend (Seu Booking Service) ---\n# Importe os stubs gRPC (garanta que cinema_pb2 foi gerado)\nimport cinema_pb2\nimport cinema_pb2_grpc\nGRPC_HOST = os.getenv('GRPC_HOST', 'localhost')\nGRPC_HOST_PORT = f\"{GRPC_HOST}:50051\"\nchannel = grpc.insecure_channel(GRPC_HOST_PORT)\ngrpc_stub = cinema_pb2_grpc.ReservaStub(channel)",
+        "detail": "websocket_server",
+        "documentation": {}
+    },
+    {
+        "label": "GRPC_HOST",
+        "kind": 5,
+        "importPath": "websocket_server",
+        "description": "websocket_server",
+        "peekOfCode": "GRPC_HOST = os.getenv('GRPC_HOST', 'localhost')\nGRPC_HOST_PORT = f\"{GRPC_HOST}:50051\"\nchannel = grpc.insecure_channel(GRPC_HOST_PORT)\ngrpc_stub = cinema_pb2_grpc.ReservaStub(channel)\n# --- Funções de Broadcast ---\nasync def broadcast(message: dict):\n    \"\"\"Envia uma mensagem para todos os clientes WebSocket conectados.\"\"\"\n    msg_json = json.dumps(message)\n    # Cria uma lista de tarefas para enviar a mensagem a todos os clientes\n    send_tasks = [conn.send_text(msg_json) for conn in active_connections]",
+        "detail": "websocket_server",
+        "documentation": {}
+    },
+    {
+        "label": "GRPC_HOST_PORT",
+        "kind": 5,
+        "importPath": "websocket_server",
+        "description": "websocket_server",
+        "peekOfCode": "GRPC_HOST_PORT = f\"{GRPC_HOST}:50051\"\nchannel = grpc.insecure_channel(GRPC_HOST_PORT)\ngrpc_stub = cinema_pb2_grpc.ReservaStub(channel)\n# --- Funções de Broadcast ---\nasync def broadcast(message: dict):\n    \"\"\"Envia uma mensagem para todos os clientes WebSocket conectados.\"\"\"\n    msg_json = json.dumps(message)\n    # Cria uma lista de tarefas para enviar a mensagem a todos os clientes\n    send_tasks = [conn.send_text(msg_json) for conn in active_connections]\n    # Espera que todas as mensagens sejam enviadas",
+        "detail": "websocket_server",
+        "documentation": {}
+    },
+    {
+        "label": "channel",
+        "kind": 5,
+        "importPath": "websocket_server",
+        "description": "websocket_server",
+        "peekOfCode": "channel = grpc.insecure_channel(GRPC_HOST_PORT)\ngrpc_stub = cinema_pb2_grpc.ReservaStub(channel)\n# --- Funções de Broadcast ---\nasync def broadcast(message: dict):\n    \"\"\"Envia uma mensagem para todos os clientes WebSocket conectados.\"\"\"\n    msg_json = json.dumps(message)\n    # Cria uma lista de tarefas para enviar a mensagem a todos os clientes\n    send_tasks = [conn.send_text(msg_json) for conn in active_connections]\n    # Espera que todas as mensagens sejam enviadas\n    await asyncio.gather(*send_tasks)",
+        "detail": "websocket_server",
+        "documentation": {}
+    },
+    {
+        "label": "grpc_stub",
+        "kind": 5,
+        "importPath": "websocket_server",
+        "description": "websocket_server",
+        "peekOfCode": "grpc_stub = cinema_pb2_grpc.ReservaStub(channel)\n# --- Funções de Broadcast ---\nasync def broadcast(message: dict):\n    \"\"\"Envia uma mensagem para todos os clientes WebSocket conectados.\"\"\"\n    msg_json = json.dumps(message)\n    # Cria uma lista de tarefas para enviar a mensagem a todos os clientes\n    send_tasks = [conn.send_text(msg_json) for conn in active_connections]\n    # Espera que todas as mensagens sejam enviadas\n    await asyncio.gather(*send_tasks)\n    logging.info(f\"Broadcast enviado para {len(active_connections)} clientes: {message['evento']}\")",
+        "detail": "websocket_server",
+        "documentation": {}
+    }
+]

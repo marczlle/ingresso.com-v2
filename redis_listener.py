@@ -2,15 +2,17 @@ import redis
 import requests
 import json
 import logging
+import os
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - RedisListener - %(levelname)s - %(message)s')
 
-REDIS_HOST = 'localhost'
+REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
 REDIS_PORT = 6379
 # Canal do Redis que monitora a expiração de chaves
 EXPIRY_CHANNEL = '__keyevent@0__:expired' 
 # Endpoint do WebSocket Service para notificar sobre a liberação
-WS_NOTIFY_URL = 'http://localhost:8000/notify_liberacao'
+WS_HOST = os.getenv('WS_HOST', 'localhost')
+WS_NOTIFY_URL = f'http://{WS_HOST}:8000/notify_liberacao'
 
 def start_redis_listener():
     r = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT)
